@@ -3,16 +3,12 @@
 
 include_once(dirname(__FILE__) . "/../barrister.php");
 
-$inFile  = $argv[1];
-$outFile = $argv[2];
-
-$out = fopen($outFile, "w");
-
 function log_result($fh, $iface, $func, $params, $resp) {
   $status = "ok";
   $result = -1;
   if ($resp->error) {
     $status = "rpcerr";
+    print "$iface.$func " . $resp->error->message . "\n";
     $result = $resp->error->code;
   }
   else {
@@ -22,8 +18,14 @@ function log_result($fh, $iface, $func, $params, $resp) {
   fprintf($fh, "%s|%s|%s|%s|%s\n", $iface, $func, $params, $status, json_encode($result));
 }
 
+
+$inFile  = $argv[1];
+$outFile = $argv[2];
+
+$out = fopen($outFile, "w");
+
 $barrister = new Barrister();
-$client    = $barrister->httpClient("http://localhost:9233/");
+$client    = $barrister->httpClient("http://localhost:8080/cgi-bin/server.php");
 
 $in = fopen($inFile, "r");
 
