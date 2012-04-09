@@ -218,6 +218,10 @@ class BarristerBatch {
     $this->sent = false;
   }
 
+  function getRequest($i) {
+    return $this->requests[$i];
+  }
+
   function proxy($interfaceName) {
     $this->client->contract->checkInterface($interfaceName);
     return new BarristerClientProxy($this, $interfaceName);

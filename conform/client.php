@@ -26,6 +26,9 @@ $barrister = new Barrister();
 $client    = $barrister->httpClient("http://localhost:9233/");
 
 $in = fopen($inFile, "r");
+
+$batch = null;
+
 while (($line = fgets($in)) !== false) {
   $line = trim($line);
   if ($line === "" || strpos($line, "#") === 0) {
@@ -33,10 +36,16 @@ while (($line = fgets($in)) !== false) {
   }
 
   if ($line === "start_batch") {
-
+    $batch = $client->startBatch();
   }
   elseif ($line === "end_batch") {
-
+    $results = $batch->send();
+    foreach ($results as $i=>$res) {
+      $req = $batch->getRequest($i);
+      $parts = preg_split("/\\./", $req["method"]);
+      log_result($out, $parts[0], $parts[1], $req["params"], $res);
+    }
+    $batch = null;
   }
   else {
     $cols = preg_split("/\\|/", $line);
@@ -48,13 +57,11 @@ while (($line = fgets($in)) !== false) {
 
     $paramsNative = json_decode($params);
     $method = $iface . "." . $func;
-    $result = $client->request($method, $paramsNative);
-    if (is_array($result)) {
-      foreach ($result as $i=>$r) {
-        log_result($out, $iface, $func, $params, $r);
-      }
+    if ($batch) {
+      $batch->request($method, $paramsNative);
     }
     else {
+      $result = $client->request($method, $paramsNative);
       log_result($out, $iface, $func, $params, $result);
     }
   }
