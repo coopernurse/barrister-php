@@ -55,7 +55,7 @@ class BarristerRpcException extends Exception {
 
   function __toString() {
     $s = "BarristerRpcException code=" . $this->getCode() . " message=" . $this->getMessage();
-    if ($this->data) {
+    if (isset($this->data)) {
       $s .= " data=" . $this->data;
     }
     return $s;
@@ -215,7 +215,7 @@ class BarristerServer {
 
   function okResp($req, $result) {
     $resp = array("jsonrpc"=>"2.0", "result"=>$result);
-    if ($req->id) {
+    if (isset($req->id)) {
       $resp["id"] = $req->id;
     }
     return $resp;
@@ -227,7 +227,7 @@ class BarristerServer {
       $err["data"] = $data;
     }
     $resp = array("jsonrpc"=>"2.0", "error"=>$err);
-    if ($req->id) {
+    if (isset($req->id)) {
       $resp["id"] = $req->id;
     }
     return $resp;
@@ -308,7 +308,7 @@ class BarristerBatch {
     $resultsById   = array();
 
     foreach ($results as $i=>$res) {
-      if ($res->id) {
+      if (isset($res->id)) {
         $resultsById[$res->id] = $res;
       }
     }
@@ -337,7 +337,7 @@ class BarristerClientProxy {
   function __call($name, $args) {
     $method = $this->interfaceName . "." . $name;
     $resp   = $this->client->request($method, $args);
-    if ($resp->error) {
+    if (isset($resp->error)) {
       throw new BarristerRpcException($resp->error->code, 
                                       $resp->error->message,
                                       $resp->error->data);
