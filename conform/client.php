@@ -6,7 +6,7 @@ include_once(dirname(__FILE__) . "/../barrister.php");
 function log_result($fh, $iface, $func, $params, $resp) {
   $status = "ok";
   $result = -1;
-  if ($resp->error) {
+  if (isset($resp->error)) {
     $status = "rpcerr";
     print "$iface.$func " . $resp->error->message . "\n";
     $result = $resp->error->code;
