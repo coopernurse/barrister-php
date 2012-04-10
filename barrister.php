@@ -1,10 +1,10 @@
 <?php
 
-function cgidebug($s) {
-  print "Content-Type: application/json\r\n";
-  print "\r\n";
-  print $s;
-  exit;
+function debuglog($s) {
+  $fh = fopen("/tmp/php.log", "a");
+  fwrite($fh, $s);
+  fwrite($fh, "\n");
+  fclose($fh);
 }
 
 class Barrister {
@@ -66,8 +66,15 @@ class BarristerServer {
       $reqJson = file_get_contents('php://input');
     }
 
-    $req      = json_decode($reqJson);
-    $resp     = $this->handle($req);
+    $resp = null;
+    $req = json_decode($reqJson);
+    if ($req === null) {
+      $resp = $this->errResp($req, -32700, "Unable to parse request JSON: $reqJson");
+    }
+    else {
+      $resp     = $this->handle($req);
+    }
+
     $respJson = json_encode($resp);
     $len      = strlen($respJson);
 

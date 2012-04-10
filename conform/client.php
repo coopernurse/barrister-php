@@ -25,7 +25,7 @@ $outFile = $argv[2];
 $out = fopen($outFile, "w");
 
 $barrister = new Barrister();
-$client    = $barrister->httpClient("http://localhost:8080/cgi-bin/server.php");
+$client    = $barrister->httpClient("http://localhost:9233/");
 
 $in = fopen($inFile, "r");
 
