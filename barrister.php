@@ -1,10 +1,37 @@
 <?php
 
-function debuglog($s) {
+/*
+function barrister_debug($s) {
   $fh = fopen("/tmp/php.log", "a");
   fwrite($fh, $s);
   fwrite($fh, "\n");
   fclose($fh);
+}
+*/
+
+function bar_json_decode($jsonStr) {
+  if ($jsonStr === null || $jsonStr === "null") {
+    return null;
+  }
+
+  $ok  = true;
+  $val = json_decode($jsonStr);
+  if (function_exists('json_last_error')) {
+    if (json_last_error() !== JSON_ERROR_NONE) {
+      $ok = false;
+    }
+  }
+  else if ($val === null) {
+    $ok = false;
+  }
+
+  if ($ok) {
+    return $val;
+  }
+  else {
+    $s = substr($jsonStr, 0, 100);
+    throw new BarristerRpcException(-32700, "Unable to decode JSON. First 100 chars: $s");
+  }
 }
 
 class Barrister {
@@ -17,7 +44,7 @@ class Barrister {
 
 class BarristerRpcException extends Exception {
 
-  function __construct($code, $message, $data=None) {
+  function __construct($code, $message, $data=null) {
     parent::__construct($message, $code);
     $this->data = $error["data"];
   }
@@ -44,7 +71,7 @@ class BarristerServer {
       $data = fread($fh, filesize($idlFile));
       fclose($fh);
 
-      $this->contract = new BarristerContract(json_decode($data));
+      $this->contract = new BarristerContract(bar_json_decode($data));
       $this->handlers = array();
     }
     else {
@@ -67,12 +94,16 @@ class BarristerServer {
     }
 
     $resp = null;
-    $req = json_decode($reqJson);
-    if ($req === null) {
-      $resp = $this->errResp($req, -32700, "Unable to parse request JSON: $reqJson");
+    $req  = null;
+    try {
+      $req = bar_json_decode($reqJson);
     }
-    else {
-      $resp     = $this->handle($req);
+    catch (BarristerRpcException $e) {
+      $resp = $this->errResp($req, $e->getCode(), $e->getMessage());
+    }
+
+    if ($resp === null) {
+      $resp = $this->handle($req);
     }
 
     $respJson = json_encode($resp);
@@ -335,15 +366,12 @@ class BarristerHttpTransport {
     curl_setopt($ch, CURLOPT_HTTPHEADER,     $headers);
     $result = curl_exec($ch);
     if ($result === false) {
-      throw new BarristerRpcException(-32603, "HTTP POST to " . $this->url . " failed");
+      $err = curl_error($ch);
+      throw new BarristerRpcException(-32603, "HTTP POST to " . $this->url . " failed: " . $err);
     }
     else {
       //print "result: $result\n";
-      $resp = json_decode($result);
-      if ($resp === NULL) {
-        throw new BarristerRpcException(-32603, "Could not parse response. Method: " . 
-                                        $req->method . " JSON: $result");
-      }
+      $resp = bar_json_decode($result);
       return $resp;
     }
   }
