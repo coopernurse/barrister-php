@@ -247,6 +247,10 @@ class BarristerClient {
     return new BarristerClientProxy($this, $interfaceName);
   }
 
+  function getMeta() {
+    return $this->contract->getMeta();
+  }
+
   function loadContract() {
     $req = array("jsonrpc"=>"2.0", "id"=>"1", "method"=>"barrister-idl");
     $resp = $this->trans->request($req);
@@ -385,6 +389,7 @@ class BarristerContract {
     $this->interfaces = array();
     $this->structs    = array();
     $this->enums      = array();
+    $this->meta       = array();
 
     foreach ($idl as $i=>$val) {
       $type = $val->type;
@@ -397,7 +402,18 @@ class BarristerContract {
       elseif ($type === "enum") {
         $this->enums[$val->name] = $val;
       }
+      elseif ($type === "meta") {
+        foreach ($val as $k=>$v) {
+          if ($k !== "type") {
+            $this->meta[$k] = $v;
+          }
+        }
+      }
     }
+  }
+
+  function getMeta() {
+    return $this->meta;
   }
 
   function getInterface($name) {
