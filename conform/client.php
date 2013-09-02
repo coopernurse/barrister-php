@@ -18,6 +18,12 @@ function log_result($fh, $iface, $func, $params, $resp) {
   fprintf($fh, "%s|%s|%s|%s|%s\n", $iface, $func, $params, $status, json_encode($result));
 }
 
+function quiet_get($map, $key) {
+    if (array_key_exists($key, $map)) {
+        return $map[$key];
+    }
+    return null;
+}
 
 $inFile  = $argv[1];
 $outFile = $argv[2];
@@ -45,7 +51,7 @@ while (($line = fgets($in)) !== false) {
     foreach ($results as $i=>$res) {
       $req = $batch->getRequest($i);
       $parts = preg_split("/\\./", $req["method"]);
-      log_result($out, $parts[0], $parts[1], $req["params"], $res);
+      log_result($out, $parts[0], $parts[1], quiet_get($req, "params"), $res);
     }
     $batch = null;
   }

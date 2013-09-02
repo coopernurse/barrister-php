@@ -4,11 +4,14 @@
 include_once(dirname(__FILE__) . "/../../barrister.php");
 
 $idlDir = '';
-if ($_ENV['WORKSPACE']) {
+if (isset($_ENV['WORKSPACE'])) {
   $idlDir = $_ENV['WORKSPACE'] . "/conform";
 }
-elseif ($_ENV['PYTHONPATH']) {
+elseif (isset($_ENV['PYTHONPATH'])) {
   $idlDir = $_ENV['PYTHONPATH'] . "/conform";
+}
+elseif (isset($_ENV['BARRISTER'])) {
+  $idlDir = $_ENV['BARRISTER'] . "/conform";
 }
 
 class A {
