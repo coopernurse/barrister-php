@@ -10,7 +10,7 @@ Install via composer:
 To write a client:
 
 ```php
-$barrister = new \coopernurse\barrister\Barrister();
+$barrister = new \coopernurse\Barrister\Barrister();
 $client    = $barrister->httpClient("http://example.org/service");
 ```
 
@@ -20,7 +20,7 @@ To expose a service:
 // substitute your interface .json file here
 // use the 'barrister' command line tool to produce the json file
 // from your IDL
-$server = new \coopernurse\barrister\Server("calc.json");
+$server = new \coopernurse\Barrister\Server("calc.json");
 
 // bind your implementation classes to interface names
 $server->addHandler("Calculator", new Calculator());

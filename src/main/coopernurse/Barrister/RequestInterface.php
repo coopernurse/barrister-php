@@ -1,11 +1,11 @@
 <?php
 
-namespace coopernurse\barrister;
+namespace coopernurse\Barrister;
 
 interface RequestInterface {
 
   /**
-   * Send a request to a barrister server and return the decoded results
+   * Send a request to a Barrister server and return the decoded results
    *
    * @param array $req
    * @return object|array

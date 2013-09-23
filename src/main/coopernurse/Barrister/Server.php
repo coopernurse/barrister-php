@@ -1,6 +1,6 @@
 <?php
 
-namespace coopernurse\barrister;
+namespace coopernurse\Barrister;
 
 class Server {
 

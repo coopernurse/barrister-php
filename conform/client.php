@@ -3,7 +3,7 @@ require '../vendor/autoload.php';
 
 $inFile  = $argv[1];
 
-$barrister = new \coopernurse\barrister\Barrister();
+$barrister = new \coopernurse\Barrister\Barrister();
 $client    = $barrister->httpClient("http://localhost:9233/server.php");
 
 $in = fopen($inFile, "r");

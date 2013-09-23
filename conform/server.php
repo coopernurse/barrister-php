@@ -77,7 +77,7 @@ class B {
 
 }
 
-$server = new \coopernurse\barrister\Server(__DIR__ . "/conform.json");
+$server = new \coopernurse\Barrister\Server(__DIR__ . "/conform.json");
 $server->addHandler("A", new A());
 $server->addHandler("B", new B());
 $server->handleHTTP();

@@ -1,5 +1,5 @@
 {
-    "name": "coopernurse/barrister",
+    "name": "coopernurse/Barrister",
     "description": "A JSON-RPC 2.0 client/server with contractual checks",
     "license": "MIT",
     "require": {
