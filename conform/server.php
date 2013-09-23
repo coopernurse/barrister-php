@@ -1,18 +1,5 @@
-#!/usr/bin/env php
 <?php
-
-include_once(dirname(__FILE__) . "/../../barrister.php");
-
-$idlDir = '';
-if (isset($_ENV['WORKSPACE'])) {
-  $idlDir = $_ENV['WORKSPACE'] . "/conform";
-}
-elseif (isset($_ENV['PYTHONPATH'])) {
-  $idlDir = $_ENV['PYTHONPATH'] . "/conform";
-}
-elseif (isset($_ENV['BARRISTER'])) {
-  $idlDir = $_ENV['BARRISTER'] . "/conform";
-}
+require '../vendor/autoload.php';
 
 class A {
 
@@ -90,9 +77,7 @@ class B {
 
 }
 
-$server = new BarristerServer($idlDir . "/conform.json");
+$server = new \coopernurse\Barrister\Server(__DIR__ . "/conform.json");
 $server->addHandler("A", new A());
 $server->addHandler("B", new B());
 $server->handleHTTP();
-
-?>

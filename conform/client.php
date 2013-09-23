@@ -1,57 +1,33 @@
-#!/usr/bin/env php
 <?php
-
-include_once(dirname(__FILE__) . "/../barrister.php");
-
-function log_result($fh, $iface, $func, $params, $resp) {
-  $status = "ok";
-  $result = -1;
-  if (isset($resp->error)) {
-    $status = "rpcerr";
-    print "$iface.$func " . $resp->error->message . "\n";
-    $result = $resp->error->code;
-  }
-  else {
-    $result = $resp->result;
-  }
-
-  fprintf($fh, "%s|%s|%s|%s|%s\n", $iface, $func, $params, $status, json_encode($result));
-}
-
-function quiet_get($map, $key) {
-    if (array_key_exists($key, $map)) {
-        return $map[$key];
-    }
-    return null;
-}
+require '../vendor/autoload.php';
 
 $inFile  = $argv[1];
-$outFile = $argv[2];
 
-$out = fopen($outFile, "w");
-
-$barrister = new Barrister();
-$client    = $barrister->httpClient("http://localhost:9233/");
+$barrister = new \coopernurse\Barrister\Barrister();
+$client    = $barrister->httpClient("http://localhost:9233/server.php");
 
 $in = fopen($inFile, "r");
 
 $batch = null;
 
 while (($line = fgets($in)) !== false) {
+
   $line = trim($line);
-  if ($line === "" || strpos($line, "#") === 0) {
+
+  if ($line === "" || $line[0] === "#") {
     continue;
   }
+
+  echo "\n -- $line\n";
 
   if ($line === "start_batch") {
     $batch = $client->startBatch();
   }
   elseif ($line === "end_batch") {
     $results = $batch->send();
-    foreach ($results as $i=>$res) {
-      $req = $batch->getRequest($i);
-      $parts = preg_split("/\\./", $req["method"]);
-      log_result($out, $parts[0], $parts[1], quiet_get($req, "params"), $res);
+    foreach ($results as $i => $result) {
+      echo ' -> ' . json_encode($batch->getRequest($i)) . "\n";
+      echo ' <- ' . json_encode($result) . "\n";
     }
     $batch = null;
   }
@@ -69,12 +45,9 @@ while (($line = fgets($in)) !== false) {
       $batch->request($method, $paramsNative);
     }
     else {
-      $result = $client->request($method, $paramsNative);
-      log_result($out, $iface, $func, $params, $result);
+      echo ' -> ' . json_encode($client->createRequest($method, $paramsNative)) . "\n";
+      echo ' <- ' . json_encode($client->request($method, $paramsNative)) . "\n";
     }
   }
 }
 fclose($in);
-fclose($out);
-
-?>
