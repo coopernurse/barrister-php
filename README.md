@@ -1,36 +1,34 @@
 
 ## Installation
 
-Download from GitHub:
+Install via composer:
 
-    curl -o barrister.php https://raw.github.com/coopernurse/barrister-php/master/barrister.php
+```json
+ { "todo" : "put composer require statement here" }
+```
 
 To write a client:
 
-    <?php
-        include_once("barrister.php");
-        
-        $barrister = new Barrister();
-        $client = $barrister->httpClient("http://example.org/service");
-    ?>
-    
+```php
+$barrister = new \coopernurse\barrister\Barrister();
+$client    = $barrister->httpClient("http://example.org/service");
+```
+
 To expose a service:
 
-    <?php
-        include_once("barrister.php");
-        
-        // substitute your interface .json file here
-        // use the 'barrister' command line tool to produce the json file
-        // from your IDL
-        $server = new BarristerServer("calc.json");
-        
-        // bind your implementation classes to interface names
-        $server->addHandler("Calculator", new Calculator());
-        
-        // will parse the raw POST data, invoke the correct
-        // handler function, and send the result as JSON
-        $server->handleHTTP();
-    ?>
+```php
+// substitute your interface .json file here
+// use the 'barrister' command line tool to produce the json file
+// from your IDL
+$server = new \coopernurse\barrister\Server("calc.json");
+
+// bind your implementation classes to interface names
+$server->addHandler("Calculator", new Calculator());
+
+// will parse the raw POST data, invoke the correct
+// handler function, and send the result as JSON
+$server->handleHTTP();
+```
 
 ## Dependencies
 
