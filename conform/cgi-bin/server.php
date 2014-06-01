@@ -3,7 +3,7 @@
 
 include_once(dirname(__FILE__) . "/../../barrister.php");
 
-$idlDir = '';
+$idlDir = '../../barrister/conform';
 if (isset($_ENV['WORKSPACE'])) {
   $idlDir = $_ENV['WORKSPACE'] . "/conform";
 }
