@@ -85,9 +85,9 @@ class BarristerServer {
   }
 
   function handleHTTP() {
-    $isCGI = strpos($_ENV['GATEWAY_INTERFACE'], "CGI") === 0;
+    $isCGI = strpos(getenv('GATEWAY_INTERFACE'), "CGI") === 0;
     if ($isCGI) {
-      $reqJson = file_get_contents('php://stdin', NULL, NULL, 0, $_ENV['CONTENT_LENGTH']);
+      $reqJson = file_get_contents('php://stdin', NULL, NULL, 0, getenv('CONTENT_LENGTH'));
     }
     else {
       $reqJson = file_get_contents('php://input');

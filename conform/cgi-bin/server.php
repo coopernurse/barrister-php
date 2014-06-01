@@ -4,14 +4,14 @@
 include_once(dirname(__FILE__) . "/../../barrister.php");
 
 $idlDir = '../../barrister/conform';
-if (isset($_ENV['WORKSPACE'])) {
-  $idlDir = $_ENV['WORKSPACE'] . "/conform";
+if (isset(getenv('WORKSPACE'))) {
+  $idlDir = getenv('WORKSPACE') . "/conform";
 }
-elseif (isset($_ENV['PYTHONPATH'])) {
-  $idlDir = $_ENV['PYTHONPATH'] . "/conform";
+elseif (isset(getenv('PYTHONPATH'))) {
+  $idlDir = getenv('PYTHONPATH') . "/conform";
 }
-elseif (isset($_ENV['BARRISTER'])) {
-  $idlDir = $_ENV['BARRISTER'] . "/conform";
+elseif (isset(getenv('BARRISTER'))) {
+  $idlDir = getenv('BARRISTER') . "/conform";
 }
 
 class A {
