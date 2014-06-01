@@ -4,13 +4,13 @@
 include_once(dirname(__FILE__) . "/../../barrister.php");
 
 $idlDir = '../../barrister/conform';
-if getenv('WORKSPACE') {
+if (getenv('WORKSPACE')) {
   $idlDir = getenv('WORKSPACE') . "/conform";
 }
-elseif getenv('PYTHONPATH') {
+elseif (getenv('PYTHONPATH')) {
   $idlDir = getenv('PYTHONPATH') . "/conform";
 }
-elseif getenv('BARRISTER') {
+elseif (getenv('BARRISTER')) {
   $idlDir = getenv('BARRISTER') . "/conform";
 }
 
