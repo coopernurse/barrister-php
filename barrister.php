@@ -46,7 +46,7 @@ class BarristerRpcException extends Exception {
 
   function __construct($code, $message, $data=null) {
     parent::__construct($message, $code);
-    $this->data = $error["data"];
+    $this->data = $data;
   }
 
   function getData() {
